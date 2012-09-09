@@ -8,6 +8,7 @@
 	Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
 	
 	History:
+    v. 0.1.2:  fixed a bug in the management of one-time pads
     v. 0.1.1:  now the user can choose between 32-bit & 64-bit math
     v. 0.1.0:  leOS now works correcty on Arduino Leonardo/Atmega32U4
     v. 0.0.8:  now the user can modify running tasks    
@@ -75,8 +76,7 @@
 #error Sorry, clock frequency not supported!
 #endif
 
-const uint8_t ONETIME=2;
-const uint8_t SCHEDULED=1;
+const uint8_t ONETIME=1;
 
 class leOS {
 	public: 

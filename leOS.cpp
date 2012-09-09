@@ -61,7 +61,7 @@ uint8_t leOS::addTask(void (*userTask)(void), unsigned long taskInterval, uint8_
 	if ((taskInterval < 1) || (taskInterval > 3600000UL)) { //set your max interval here (max 2^32-1) - default 3600000 (1 hour)
 		taskInterval = 50; //50 ms by default
 	}
-    if (oneTimeTask > 1) { //allowed values are 0=cyclic task - 1=onetime task
+    if (oneTimeTask > 1) { //allowed values are 0=cyclic task -- 1=onetime task
         oneTimeTask = 0;
     }
     //add the task to the scheduler
