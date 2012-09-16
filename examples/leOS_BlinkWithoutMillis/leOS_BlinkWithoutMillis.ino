@@ -13,15 +13,14 @@ More info on the schedulers and the methods can be found into the README file.
 
 Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
 	
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public
-License as published by the Free Software Foundation; either
-version 3.0 of the License, or (at your option) any later version.
+This code and the leOS library are free software; you can redistribute 
+and/or modify them under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 3.0 of the License,
+or (at your option) any later version.
 
-This library is distributed in the hope that it will be useful,
+The leOS library is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 
 */
 
@@ -30,7 +29,7 @@ Lesser General Public License for more details.
 
 leOS myOS; //create a new istance of the class leOS
 
-//variabiles to control the LEDs
+//variables to control the LEDs
 byte led1Status = 0;
 const byte LED1 = 13;
 
