@@ -12,6 +12,9 @@ Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
 
 ***********************
 Version history
+
+v. 0.1.3:  now a task can be added in "pause mode"; new example sketches
+v. 0.1.2:  fixed a bug in the management of one-time pads
 v. 0.1.1:  now the user can choose between 32-bit & 64-bit math
 v. 0.1.0:  leOS now works correcty on Arduino Leonardo/Atmega32U4
 v. 0.0.8:  now the user can modify running tasks
@@ -43,13 +46,21 @@ void setup() {
 Now you can add a task by simply call the method .addTask():
 void setup() {
   myOS.begin();
-  myOS.addTask(yourFunction, scheduleTime);
+  myOS.addTask(yourFunction, scheduleTime[, status]);
   ...
 }
 
 yourFunction must be a routine that is inside your sketch. scheduleTime is
 the scheduled interval in milliseconds at which you want your routine
-to be executed. 
+to be executed. Starting with version 0.1.3, now the user can choose the status
+of the task when it adds it to the scheduler. status can be: PAUSED, for a task
+that doesn't have to start immediately; SCHEDULED (default option), for a normal
+task that has to start after its scheduling; ONETINE, for a task that has to
+run only once.
+An interesting feature is the ability to run one-time tasks. A one-time task
+is a task that will be run only once: the scheduler, once it has run the task,
+will remove it from the running tasks (it won't be paused, it will be permanently
+deleted).
 
 
 To pause a task, just call the following method:
@@ -65,19 +76,6 @@ myOS.restartTask(yourFunction);
 To remove a task from the scheduler call this method:
 
 myOS.removeTask(yourFunction);
-
-
-
-An interesting feature is the ability to run one-time tasks. A one-time task
-is a task that will be run only once. To add a one-time task just add the paramether
-ONETIME after the interval:
-
-myOS.addTask(yourFunction, interval, ONETIME);
-
-
-This will inform the scheduler that once it has run the task it will have
-to remove it from the scheduled task (it won't be paused, it will be permanently
-deleted).
 
 
 To modify a running task, simply call the modifyTask method with the new interval time 
@@ -163,11 +161,10 @@ version.
 
 This library is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-General Public License for more details.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 
 
 ***********************
 Document revision
 
-11th revision: 2012/08/01
+12th revision: 2012/09/16

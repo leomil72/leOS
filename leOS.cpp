@@ -3,39 +3,41 @@
    inside the leOS.h file
 */
 
-
 //include required libraries
 #include "leOS.h"
 #include <avr/interrupt.h>
 
 typedef void (*voidFuncPtr)(void);
 
-//global variables
+//global settings - modify them to change the leOS characteristics
 const uint8_t MAX_TASKS = 9; //max allowed tasks -1 (i.e.: 9 = 10-1)
 #ifdef SIXTYFOUR_MATH
 volatile unsigned long long _counterMs = 0; //use a 64-bit counter so it will overflow after 584,942,417 years!
 #else
 volatile unsigned long _counterMs = 0; //use a 32bit counter, so max intervals cannot exceed 49.7 days
 #endif
+//set your max interval here (max 2^32-1) - default 3600000 (1 hour)
+#define MAX_TASK_INTERVAL 3600000UL
 
+//global variables
 #if defined(ATMEGAxU)
 volatile unsigned int _starter = 0;
 #else
 volatile uint8_t _starter = 0;
 #endif
 uint8_t _initialized;
-volatile static voidFuncPtr taskPointers[MAX_TASKS]; //store the pointers to user's tasks
-
 
 //tasks variables
-volatile unsigned long userTasksIntervals[MAX_TASKS];
+volatile static voidFuncPtr taskPointers[MAX_TASKS]; //used to store the pointers to user's tasks
+volatile unsigned long userTasksIntervals[MAX_TASKS]; //used to store the interval between each task's run
+//used to store the next time a task will have to be executed
 #ifdef SIXTYFOUR_MATH
 volatile unsigned long long plannedTasks[MAX_TASKS];
 #else
 volatile unsigned long plannedTasks[MAX_TASKS];
 #endif
-volatile uint8_t taskIsActive[MAX_TASKS];
-volatile uint8_t _numTasks;
+volatile uint8_t taskIsActive[MAX_TASKS]; //used to store the status of the tasks
+volatile uint8_t _numTasks; //the number of current running tasks
 
 
 //class constructor
@@ -53,21 +55,21 @@ void leOS::begin(void) {
 
 
 //add a task to the scheduler
-uint8_t leOS::addTask(void (*userTask)(void), unsigned long taskInterval, uint8_t oneTimeTask) {
+uint8_t leOS::addTask(void (*userTask)(void), unsigned long taskInterval, uint8_t taskStatus) {
 	if ((_initialized == 0) || (_numTasks == MAX_TASKS)) { //max number of allowed tasks reached
 		return 1; 
 	}
 
-	if ((taskInterval < 1) || (taskInterval > 3600000UL)) { //set your max interval here (max 2^32-1) - default 3600000 (1 hour)
+	if ((taskInterval < 1) || (taskInterval > MAX_TASK_INTERVAL)) { 
 		taskInterval = 50; //50 ms by default
 	}
-    if (oneTimeTask > 1) { //allowed values are 0=cyclic task -- 1=onetime task
-        oneTimeTask = 0;
+    if (taskStatus > ONETIME) { //allowed values are 0=paused task -- 1=cyclic task -- 2=onetime task
+        taskStatus = SCHEDULED;
     }
     //add the task to the scheduler
     SREG &= ~(1<<SREG_I); //halt the scheduler
 	taskPointers[_numTasks] = *userTask;
-	taskIsActive[_numTasks] = oneTimeTask + 1;
+	taskIsActive[_numTasks] = taskStatus;
 	userTasksIntervals[_numTasks] = taskInterval;
 	plannedTasks[_numTasks] = _counterMs + taskInterval;
 	_numTasks++;
@@ -90,7 +92,7 @@ uint8_t leOS::restartTask(void (*userTask)(void)) {
 
 //modify an existing task
 uint8_t leOS::modifyTask(void (*userTask)(void), unsigned long taskInterval, uint8_t oneTimeTask) {
-    if ((oneTimeTask < 1) && (oneTimeTask > 2)) {
+    if ((oneTimeTask < SCHEDULED) && (oneTimeTask > ONETIME)) {
         oneTimeTask = NULL;
     }
 

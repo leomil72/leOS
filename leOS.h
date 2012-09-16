@@ -8,6 +8,7 @@
 	Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
 	
 	History:
+    v. 0.1.3:  now a task can be added in "pause mode" - a new example sketch
     v. 0.1.2:  fixed a bug in the management of one-time pads
     v. 0.1.1:  now the user can choose between 32-bit & 64-bit math
     v. 0.1.0:  leOS now works correcty on Arduino Leonardo/Atmega32U4
@@ -27,8 +28,7 @@
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	General Public License for more details.
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
 
 */
 
@@ -76,7 +76,9 @@
 #error Sorry, clock frequency not supported!
 #endif
 
-const uint8_t ONETIME=1;
+const uint8_t PAUSED = 0;
+const uint8_t SCHEDULED = 1;
+const uint8_t ONETIME = 2;
 
 class leOS {
 	public: 
@@ -84,7 +86,7 @@ class leOS {
 		leOS();
         void begin(void);
         void (*voidFuncPtr)(void);
-		uint8_t addTask(void (*)(void), unsigned long, uint8_t oneTimeTask=NULL);
+		uint8_t addTask(void (*)(void), unsigned long, uint8_t taskStatus=1);
 		uint8_t removeTask(void (*)(void));
 		uint8_t pauseTask(void (*)(void));
         uint8_t restartTask(void (*)(void));
