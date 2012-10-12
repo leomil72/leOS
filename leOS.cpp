@@ -7,7 +7,6 @@
 #include "leOS.h"
 #include <avr/interrupt.h>
 
-typedef void (*voidFuncPtr)(void);
 
 //global settings - modify them to change the leOS characteristics
 const uint8_t MAX_TASKS = 9; //max allowed tasks -1 (i.e.: 9 = 10-1)
@@ -19,6 +18,7 @@ volatile unsigned long _counterMs = 0; //use a 32bit counter, so max intervals c
 //set your max interval here (max 2^32-1) - default 3600000 (1 hour)
 #define MAX_TASK_INTERVAL 3600000UL
 
+
 //global variables
 #if defined(ATMEGAxU)
 volatile unsigned int _starter = 0;
@@ -27,16 +27,20 @@ volatile uint8_t _starter = 0;
 #endif
 uint8_t _initialized;
 
+
 //tasks variables
-volatile static voidFuncPtr taskPointers[MAX_TASKS]; //used to store the pointers to user's tasks
-volatile unsigned long userTasksIntervals[MAX_TASKS]; //used to store the interval between each task's run
+struct leOS_core {
+    void (*taskPointer)(void); //used to store the pointers to user's tasks
+    volatile unsigned long userTasksInterval; //used to store the interval between each task's run
 //used to store the next time a task will have to be executed
 #ifdef SIXTYFOUR_MATH
-volatile unsigned long long plannedTasks[MAX_TASKS];
+    volatile unsigned long long plannedTask;
 #else
-volatile unsigned long plannedTasks[MAX_TASKS];
+    volatile unsigned long plannedTask;
 #endif
-volatile uint8_t taskIsActive[MAX_TASKS]; //used to store the status of the tasks
+    volatile uint8_t taskIsActive; //used to store the status of the tasks
+};
+leOS_core tasks[MAX_TASKS];
 volatile uint8_t _numTasks; //the number of current running tasks
 
 
@@ -68,10 +72,10 @@ uint8_t leOS::addTask(void (*userTask)(void), unsigned long taskInterval, uint8_
     }
     //add the task to the scheduler
     SREG &= ~(1<<SREG_I); //halt the scheduler
-	taskPointers[_numTasks] = *userTask;
-	taskIsActive[_numTasks] = taskStatus;
-	userTasksIntervals[_numTasks] = taskInterval;
-	plannedTasks[_numTasks] = _counterMs + taskInterval;
+	tasks[_numTasks].taskPointer = *userTask;
+	tasks[_numTasks].taskIsActive = taskStatus;
+	tasks[_numTasks].userTasksInterval = taskInterval;
+	tasks[_numTasks].plannedTask = _counterMs + taskInterval;
 	_numTasks++;
     SREG |= (1<<SREG_I); //restart the scheduler
     return 0;
@@ -101,12 +105,12 @@ uint8_t leOS::modifyTask(void (*userTask)(void), unsigned long taskInterval, uin
     uint8_t tempI = 0;
     uint8_t _done = 1;
 	do {
-		if (taskPointers[tempI] == *userTask) { //found the task
-            userTasksIntervals[tempI] = taskInterval;
+		if (tasks[tempI].taskPointer == *userTask) { //found the task
+            tasks[tempI].userTasksInterval = taskInterval;
             if (oneTimeTask != NULL) {
-                taskIsActive[tempI] = oneTimeTask;
+                tasks[tempI].taskIsActive = oneTimeTask;
             }
-            plannedTasks[tempI] = _counterMs + taskInterval;
+            tasks[tempI].plannedTask = _counterMs + taskInterval;
             _numTasks++;
             break;
             _done = 0;
@@ -129,13 +133,13 @@ uint8_t leOS::setTask(void (*userTask)(void), uint8_t tempStatus, unsigned long 
     SREG &= ~(1<<SREG_I); //halt the scheduler
 	uint8_t tempI = 0;
 	do {
-        if (taskPointers[tempI] == *userTask) {
-            taskIsActive[tempI] = tempStatus;
-            if (tempStatus == 1) { 
+        if (tasks[tempI].taskPointer == *userTask) {
+            tasks[tempI].taskIsActive = tempStatus;
+            if (tempStatus == SCHEDULED) { 
 				if (taskInterval == NULL) {
-					plannedTasks[_numTasks] = _counterMs + userTasksIntervals[tempI];
+					tasks[_numTasks].plannedTask = _counterMs + tasks[tempI].userTasksInterval;
 				} else {
-					plannedTasks[_numTasks] = _counterMs + taskInterval;
+					tasks[_numTasks].plannedTask = _counterMs + taskInterval;
 				}
 			}
             break;
@@ -157,15 +161,15 @@ uint8_t leOS::removeTask(void (*userTask)(void)) {
     SREG &= ~(1<<SREG_I); //halt the scheduler
 	uint8_t tempI = 0;
 	do {
-		if (taskPointers[tempI] == *userTask) {
+		if (tasks[tempI].taskPointer == *userTask) {
             if ((tempI + 1) == _numTasks) { 
                 _numTasks--;
             } else if (_numTasks > 1) {
                 for (uint8_t tempJ = tempI; tempJ < _numTasks; tempJ++) {
-                    taskPointers[tempJ] = taskPointers[tempJ + 1];
-                    taskIsActive[tempJ] = taskIsActive[tempJ + 1];
-                    userTasksIntervals[tempJ] = userTasksIntervals[tempJ + 1];
-                    plannedTasks[tempJ] = plannedTasks[tempJ + 1];
+                    tasks[tempJ].taskPointer = tasks[tempJ + 1].taskPointer;
+                    tasks[tempJ].taskIsActive = tasks[tempJ + 1].taskIsActive;
+                    tasks[tempJ].userTasksInterval = tasks[tempJ + 1].userTasksInterval;
+                    tasks[tempJ].plannedTask = tasks[tempJ + 1].plannedTask;
                 }
                 _numTasks -= 1;
             } else {
@@ -183,7 +187,7 @@ uint8_t leOS::removeTask(void (*userTask)(void)) {
         
 //IRS
 //interrupt-driven routine to run the tasks
-#if defined (ATMEGAx8) || defined (ATMEGA8) || defined (ATMEGA644) || defined (ATMEGAx0)
+#if defined (ATMEGAx8) || defined (ATMEGA8) || defined (ATMEGAx4) || defined (ATMEGAx0)
 ISR(TIMER2_OVF_vect) {
     TCNT2 = _starter;
 #elif defined (ATTINYx313)
@@ -201,25 +205,25 @@ ISR (TIMER3_OVF_vect) {
 
 	uint8_t tempI = 0;	
 	do {
-		if (taskIsActive[tempI] > 0 ) { //the task is running  
-			if (_counterMs > plannedTasks[tempI]) { //time has come to get run it away!
-				taskPointers[tempI](); //call the task
-                if (taskIsActive[tempI] == 2) { //this is a one-time task
+		if (tasks[tempI].taskIsActive > 0 ) { //the task is running  
+			if (_counterMs > tasks[tempI].plannedTask) { //time has come to get run it away!
+				tasks[tempI].taskPointer(); //call the task
+                if (tasks[tempI].taskIsActive == ONETIME) { //this is a one-time task
                     if ((tempI + 1) == _numTasks) { 
                         _numTasks--;
                     } else if (_numTasks > 1) {
                         for (uint8_t tempJ = tempI; tempJ < _numTasks; tempJ++) {
-                            taskPointers[tempJ] = taskPointers[tempJ + 1];
-                            taskIsActive[tempJ] = taskIsActive[tempJ + 1];
-                            userTasksIntervals[tempJ] = userTasksIntervals[tempJ + 1];
-                            plannedTasks[tempJ] = plannedTasks[tempJ + 1];
+                            tasks[tempJ].taskPointer = tasks[tempJ + 1].taskPointer;
+                            tasks[tempJ].taskIsActive = tasks[tempJ + 1].taskIsActive;
+                            tasks[tempJ].userTasksInterval = tasks[tempJ + 1].userTasksInterval;
+                            tasks[tempJ].plannedTask = tasks[tempJ + 1].plannedTask;
                         }
                         _numTasks -= 1;
                     } else {
                         _numTasks = 0;
                     }
                 } else {
-                    plannedTasks[tempI] = _counterMs + userTasksIntervals[tempI];
+                    tasks[tempI].plannedTask = _counterMs + tasks[tempI].userTasksInterval;
                 }
 			}
 		}
@@ -237,7 +241,7 @@ void leOS::setTimer() {
 
     //halt all the interrupts
     SREG &= ~(1<<SREG_I);
-#if defined (ATMEGAx8) || defined (ATMEGA644) || defined (ATMEGAx0)
+#if defined (ATMEGAx8) || defined (ATMEGAx4) || defined (ATMEGAx0)
     //during setup, disable all the interrupts based on timer
     TIMSK2 &= ~((1<<TOIE2) | (1<<OCIE2A) | (1<<OCIE2B));
     //prescaler source clock set to internal Atmega clock (asynch mode)
@@ -335,7 +339,7 @@ void leOS::setTimer() {
 #endif
 
     //start the counter
-#if defined (ATMEGAx8) || defined (ATMEGA644) || defined (ATMEGAx0)
+#if defined (ATMEGAx8) || defined (ATMEGAx4) || defined (ATMEGAx0)
     TCNT2 = _starter;
     TIMSK2 |= (1<<TOIE2);
 #elif defined (ATMEGA8)

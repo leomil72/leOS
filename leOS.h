@@ -3,11 +3,16 @@
 	This is not a complete OS nor an RTOS as you usually know but
 	it's a simple scheduler to schedule little works in background, so that 
 	you	can forget about them. It's designed for Arduino and other common
-	Atmel microcontroller (for the complete list refer to the README file).
+	Atmel microcontroller (for the complete list of the supported MCUs
+    please refer to the README.txt file).
 
 	Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
-	
+    
+    The latest version of this library can be found here:
+    http://www.leonardomiliani.com/?p=516
+    	
 	History:
+    v. 0.1.4:  core code rewriting (now it uses Structs)
     v. 0.1.3:  now a task can be added in "pause mode" - a new example sketch
     v. 0.1.2:  fixed a bug in the management of one-time pads
     v. 0.1.1:  now the user can choose between 32-bit & 64-bit math
@@ -16,7 +21,7 @@
     v. 0.0.7:  introduced one-time tasks
 	v. 0.0.6:  support for Arduino Leonardo/Atmega32U4
     v. 0.0.5:  fixed some bugs and optimized code & memory consumption
-	v. 0.0.4:  use of a 64-bit counter so the scheduler will overflow after 584942417 years
+	v. 0.0.4:  use of a 64-bit counter so the scheduler will overflow after 584,942,417 years
     v. 0.0.3:  added methods to pause and restart a task
 	v. 0.0.2:  user can now delete scheduled tasks
 	v. 0.0.1:  early release - user can only add tasks
@@ -45,7 +50,8 @@
 
 
 //uncomment this line if you want to use 64-bit math (more Flash consumption) - default is 32-bit math
-//#define SIXTYFOUR_MATH
+//(read the README.txt file for more info about the use of 32- vs. 64-bit math)
+#define SIXTYFOUR_MATH
 
 //check if the micro is supported
 #if defined (__AVR_ATmega48__) || defined (__AVR_ATmega88__) || defined (__AVR_ATmega168__) || defined (__AVR_ATmega328__) || defined (__AVR_ATmega48P__) || defined (__AVR_ATmega88P__) || defined (__AVR_ATmega168P__) || defined (__AVR_ATmega328P__)
@@ -58,8 +64,8 @@
 #define ATTINYx4
 #elif defined (__AVR_ATmega640__) || defined (__AVR_ATmega1280__) || defined (__AVR_ATmega1281__) || defined (__AVR_ATmega2560__) || defined (__AVR_ATmega2561__)
 #define ATMEGAx0 
-#elif defined (__AVR_ATmega644__) || defined (__AVR_ATmega644P__) || defined (__AVR_ATmega644PA__) || defined (__AVR_ATmega1284P__)
-#define ATMEGA644
+#elif defined (__AVR_ATmega344__) || defined (__AVR_ATmega344P__) || defined (__AVR_ATmega644__) || defined (__AVR_ATmega644P__) || defined (__AVR_ATmega644PA__) || defined (__AVR_ATmega1284P__)
+#define ATMEGAx4
 #elif defined (__AVR_ATtiny2313__) || defined (__AVR_ATtiny4313__)
 #define ATTINYx313
 #elif defined (__AVR_ATmega32U4__)
@@ -85,7 +91,7 @@ class leOS {
 		//public methods
 		leOS();
         void begin(void);
-        void (*voidFuncPtr)(void);
+        //void (*voidFuncPtr)(void);
 		uint8_t addTask(void (*)(void), unsigned long, uint8_t taskStatus=1);
 		uint8_t removeTask(void (*)(void));
 		uint8_t pauseTask(void (*)(void));
