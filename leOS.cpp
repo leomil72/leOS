@@ -100,7 +100,7 @@ uint8_t leOS::modifyTask(void (*userTask)(void), unsigned long taskInterval, uin
         oneTimeTask = NULL;
     }
 
-    //modify the task to the scheduler
+    //modify the task into the scheduler
     SREG &= ~(1<<SREG_I); //halt the scheduler
     uint8_t tempI = 0;
     uint8_t _done = 1;
@@ -184,8 +184,36 @@ uint8_t leOS::removeTask(void (*userTask)(void)) {
     return 0;
 }
 
-        
-//IRS
+
+//check if a task is running
+uint8_t leOS::taskIsRunning(void (*userTask)(void)) {
+	if ((_initialized == 0) || (_numTasks == 0)) {
+		return -1;
+	}
+    
+    uint8_t tempJ = 255;
+    SREG &= ~(1<<SREG_I); //halt the scheduler
+	uint8_t tempI = 0;
+    //look for the task
+	do {
+		if (tasks[tempI].taskPointer == *userTask) {
+            //return its current status
+            tempJ = tasks[tempJ].taskIsActive; 
+            break;
+        }
+        tempI++;
+    } while (tempI <= _numTasks);
+    SREG |= (1<<SREG_I); //restart the scheduler
+    return tempJ; //return 255 if the task was not found (almost impossible) or its current status
+}
+
+
+/*
+    The following code contains the core of leOS:
+    do not modify it unless you exactly know what you're doing
+*/
+
+//ISR (Interrupt Service Routine) called by the timer's overflow:
 //interrupt-driven routine to run the tasks
 #if defined (ATMEGAx8) || defined (ATMEGA8) || defined (ATMEGAx4) || defined (ATMEGAx0)
 ISR(TIMER2_OVF_vect) {

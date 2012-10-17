@@ -12,6 +12,7 @@
     http://www.leonardomiliani.com/?p=516
     	
 	History:
+    v. 1.0.0:  added a method to check if a task is running - first stable release
     v. 0.1.4:  core code rewriting (now it uses Structs)
     v. 0.1.3:  now a task can be added in "pause mode" - a new example sketch
     v. 0.1.2:  fixed a bug in the management of one-time pads
@@ -97,7 +98,7 @@ class leOS {
 		uint8_t pauseTask(void (*)(void));
         uint8_t restartTask(void (*)(void));
 		uint8_t modifyTask(void (*)(void), unsigned long, uint8_t oneTimeTask=NULL);
-		
+		uint8_t taskIsRunning(void (*)(void));
 	private:
         //private methods
         void setTimer();
