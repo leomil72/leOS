@@ -13,7 +13,7 @@ const uint8_t MAX_TASKS = 9; //max allowed tasks -1 (i.e.: 9 = 10-1)
 #ifdef SIXTYFOUR_MATH
 volatile unsigned long long _counterMs = 0; //use a 64-bit counter so it will overflow after 584,942,417 years!
 #else
-volatile unsigned long _counterMs = 0; //use a 32bit counter, so max intervals cannot exceed 49.7 days
+volatile unsigned long _counterMs = 4294950000UL; //use a 32bit counter, so max intervals cannot exceed 49.7 days
 #endif
 //set your max interval here (max 2^32-1) - default 3600000 (1 hour)
 #define MAX_TASK_INTERVAL 3600000UL
@@ -146,7 +146,7 @@ uint8_t leOS::setTask(void (*userTask)(void), uint8_t tempStatus, unsigned long 
         } else {
             tempI++;
     }
-	} while (tempI <= _numTasks);
+	} while (tempI < _numTasks);
     SREG |= (1<<SREG_I); //restart the scheduler
     return 0;
 }    
@@ -179,14 +179,14 @@ uint8_t leOS::removeTask(void (*userTask)(void)) {
 		} else {
 			tempI++;
 		}
-	} while (tempI <= _numTasks);
+	} while (tempI < _numTasks);
     SREG |= (1<<SREG_I); //restart the scheduler
     return 0;
 }
 
 
 //check if a task is running
-uint8_t leOS::taskIsRunning(void (*userTask)(void)) {
+uint8_t leOS::getTaskStatus(void (*userTask)(void)) {
 	if ((_initialized == 0) || (_numTasks == 0)) {
 		return -1;
 	}
@@ -198,19 +198,21 @@ uint8_t leOS::taskIsRunning(void (*userTask)(void)) {
 	do {
 		if (tasks[tempI].taskPointer == *userTask) {
             //return its current status
-            tempJ = tasks[tempJ].taskIsActive; 
+            tempJ = tasks[tempI].taskIsActive; 
             break;
         }
         tempI++;
-    } while (tempI <= _numTasks);
+    } while (tempI < _numTasks);
     SREG |= (1<<SREG_I); //restart the scheduler
     return tempJ; //return 255 if the task was not found (almost impossible) or its current status
 }
 
 
 /*
-    The following code contains the core of leOS:
-    do not modify it unless you exactly know what you're doing
+    **************************************************************
+    * WARNING - The following code contains the core of leOS:    *
+    * do not modify it unless you exactly know what you're doing *
+    **************************************************************
 */
 
 //ISR (Interrupt Service Routine) called by the timer's overflow:
@@ -229,14 +231,21 @@ ISR (TIMER3_OVF_vect) {
     TCNT3 = _starter;
 #endif
 
-    _counterMs++;
+    _counterMs++; //increment the ms counter
 
+    //this is the scheduler - it checks if a task has to be executed
 	uint8_t tempI = 0;	
 	do {
 		if (tasks[tempI].taskIsActive > 0 ) { //the task is running  
-			if (_counterMs > tasks[tempI].plannedTask) { //time has come to get run it away!
+            //check if it's time to execute the task
+#ifdef SIXTYFOUR_MATH
+			if (_counterMs > tasks[tempI].plannedTask) { 
+#else
+            if ((long)(_counterMs - tasks[tempI].plannedTask) >=0) { //this trick overrun the overflow of _counterMs
+#endif
 				tasks[tempI].taskPointer(); //call the task
-                if (tasks[tempI].taskIsActive == ONETIME) { //this is a one-time task
+                //if it's a one-time task, than it has to be removed after running
+                if (tasks[tempI].taskIsActive == ONETIME) { 
                     if ((tempI + 1) == _numTasks) { 
                         _numTasks--;
                     } else if (_numTasks > 1) {
@@ -251,6 +260,7 @@ ISR (TIMER3_OVF_vect) {
                         _numTasks = 0;
                     }
                 } else {
+                    //let's schedule next start
                     tasks[tempI].plannedTask = _counterMs + tasks[tempI].userTasksInterval;
                 }
 			}

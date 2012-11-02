@@ -8,25 +8,12 @@
 
 	Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
     
-    The latest version of this library can be found here:
+    The latest version of this library can be found at:
     http://www.leonardomiliani.com/?p=516
     	
-	History:
-    v. 1.0.0:  added a method to check if a task is running - first stable release
-    v. 0.1.4:  core code rewriting (now it uses Structs)
-    v. 0.1.3:  now a task can be added in "pause mode" - a new example sketch
-    v. 0.1.2:  fixed a bug in the management of one-time pads
-    v. 0.1.1:  now the user can choose between 32-bit & 64-bit math
-    v. 0.1.0:  leOS now works correcty on Arduino Leonardo/Atmega32U4
-    v. 0.0.8:  now the user can modify running tasks    
-    v. 0.0.7:  introduced one-time tasks
-	v. 0.0.6:  support for Arduino Leonardo/Atmega32U4
-    v. 0.0.5:  fixed some bugs and optimized code & memory consumption
-	v. 0.0.4:  use of a 64-bit counter so the scheduler will overflow after 584,942,417 years
-    v. 0.0.3:  added methods to pause and restart a task
-	v. 0.0.2:  user can now delete scheduled tasks
-	v. 0.0.1:  early release - user can only add tasks
-
+	Current version: 1.0.1a - 2012/10/28
+    (for a complete history of the previous versions, see the README file)
+    
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public
 	License as published by the Free Software Foundation; either
@@ -42,6 +29,11 @@
 #ifndef leOS_H
 #define leOS_H
 
+
+//library version
+#define leOS_VERSION 101
+
+
 //Library is compatible both with Arduino <=0023 and Arduino >=100
 #if defined(ARDUINO) && (ARDUINO >= 100)
 #include "Arduino.h"
@@ -52,7 +44,7 @@
 
 //uncomment this line if you want to use 64-bit math (more Flash consumption) - default is 32-bit math
 //(read the README.txt file for more info about the use of 32- vs. 64-bit math)
-#define SIXTYFOUR_MATH
+//#define SIXTYFOUR_MATH
 
 //check if the micro is supported
 #if defined (__AVR_ATmega48__) || defined (__AVR_ATmega88__) || defined (__AVR_ATmega168__) || defined (__AVR_ATmega328__) || defined (__AVR_ATmega48P__) || defined (__AVR_ATmega88P__) || defined (__AVR_ATmega168P__) || defined (__AVR_ATmega328P__)
@@ -72,7 +64,7 @@
 #elif defined (__AVR_ATmega32U4__)
 #define ATMEGAxU
 #if (F_CPU!=16000000UL)
-#error Sorry, on Atmega32U4 only 16 MHz are supported
+#error Sorry, Atmega32U4 is supported only at 16 MHz 
 #endif
 #else
 #error Sorry, microcontroller not supported!
@@ -98,7 +90,7 @@ class leOS {
 		uint8_t pauseTask(void (*)(void));
         uint8_t restartTask(void (*)(void));
 		uint8_t modifyTask(void (*)(void), unsigned long, uint8_t oneTimeTask=NULL);
-		uint8_t taskIsRunning(void (*)(void));
+		uint8_t getTaskStatus(void (*)(void));
 	private:
         //private methods
         void setTimer();

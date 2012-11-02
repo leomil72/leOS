@@ -13,6 +13,9 @@ Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
 ***********************
 Version history
 
+v. 1.0.1a: function taskIsRunning renamed to getTaskStatus
+v. 1.0.1:  code cleaning and 32-bit overflow fixing
+v. 1.0.0:  added a method to check if a task is running - first stable release
 v. 0.1.5:  added support for Atmega344
 v. 0.1.4:  core code rewriting (now it uses Structs)
 v. 0.1.3:  now a task can be added in "paused mode"; new example sketches
@@ -76,29 +79,36 @@ myOS.removeTask(yourFunction);
 
 To modify a running task, simply call the modifyTask method with the new interval time 
 and/or the kind of the status' task, i.e. a normal or a one-time task:
-
 myOS.modifyTask(yourFunction, newInterval [, newTaskStatus]);
-
 
 newTaskStatus can be ONETIME if you decide to transform a normal task into a
 one-time task, or SCHEDULED if you want to transform a one-time task into
 a normal task (the one-time has still to be executed).
 
-It's the user that should check his code to avoid strange situations when he 
-pauses a task. I.e.: if the task that must be paused alternates the output
-of a pin, the user should check if the state of the pin after the pause is
-compatible with his circuit.
 
-The examples that come with the library explain very well the usage of leOS.
+To check if a task is running, you have to use the taskIsRunning() method:
+myOS.getTaskStatus(yourFunction);
+
+This will return 255 if there was an error (task not found) or a value for the
+current status: 
+PAUSED (equal to 0) - task is paused/not running
+SCHEDULED (equal to 1) - task is running 
+ONETIME (equal to 2) - task is scheduled to run in a near future.
+
+
+*Be careful*: the user is asked to check his code to avoid strange situations when 
+he pauses a task. I.e.: if the task that has been paused alternated the output of 
+a pin and that pin drove an external circuit, the user should check if the status 
+of the pin after the task has been paused is safe and compatible with his needs.
 
 
 ***********************
 32-/64-bit math
 
 Starting with version 0.1.1, the user can choose between 32-bit and 64-bit math.
-Using 32-bit math, the maximum interval that can be choosed is limited to 49.7 days; 
-moreover, the internal counter will overflow after 49.7 days so the user must be
-careful when he writes sketches that have to run all the time. 
+Using 32-bit math, the maximum interval that can be choosed is limited to 49.7 days;
+the overflow of the counter has been fixed since versione 1.0.1.
+
 While using 64-bit math the maximum that can be choosen is only limited by the
 user's fantasy, due to the fact that the 64-bit counter will overflow after 
 584,942,417 years (default maximum interval is 1 hour, but you can change this
@@ -181,4 +191,4 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ***********************
 Document revision
 
-14th revision: 2012/10/12
+17th revision: 2012/10/28
