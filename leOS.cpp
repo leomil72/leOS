@@ -13,7 +13,7 @@ const uint8_t MAX_TASKS = 9; //max allowed tasks -1 (i.e.: 9 = 10-1)
 #ifdef SIXTYFOUR_MATH
 volatile unsigned long long _counterMs = 0; //use a 64-bit counter so it will overflow after 584,942,417 years!
 #else
-volatile unsigned long _counterMs = 4294950000UL; //use a 32bit counter, so max intervals cannot exceed 49.7 days
+volatile unsigned long _counterMs = 0; //use a 32bit counter, so max intervals cannot exceed 49.7 days
 #endif
 //set your max interval here (max 2^32-1) - default 3600000 (1 hour)
 #define MAX_TASK_INTERVAL 3600000UL
