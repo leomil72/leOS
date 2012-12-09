@@ -105,7 +105,7 @@ uint8_t leOS::modifyTask(void (*userTask)(void), unsigned long taskInterval, uin
     uint8_t tempI = 0;
     uint8_t _done = 1;
 	do {
-		if (tasks[tempI].taskPointer == *userTask) { //found the task
+		if (tasks[tempI].taskPointer == *userTask) { //task found
             tasks[tempI].userTasksInterval = taskInterval;
             if (oneTimeTask != NULL) {
                 tasks[tempI].taskIsActive = oneTimeTask;
@@ -191,7 +191,7 @@ uint8_t leOS::getTaskStatus(void (*userTask)(void)) {
 		return -1;
 	}
     
-    uint8_t tempJ = 255;
+    uint8_t tempJ = 255; //return 255 if the task was not found (almost impossible)
     SREG &= ~(1<<SREG_I); //halt the scheduler
 	uint8_t tempI = 0;
     //look for the task
@@ -204,7 +204,7 @@ uint8_t leOS::getTaskStatus(void (*userTask)(void)) {
         tempI++;
     } while (tempI < _numTasks);
     SREG |= (1<<SREG_I); //restart the scheduler
-    return tempJ; //return 255 if the task was not found (almost impossible) or its current status
+    return tempJ; //return the task status
 }
 
 
@@ -342,7 +342,7 @@ void leOS::setTimer() {
     TIMSK &= ~((1<<TOIE2) | (1<<OCIE2));
     //normal mode: counter incremented until overflow
     TCCR2 &= ~((1<<WGM21) | (1<<WGM20));
-    //prescaler source clock set to internal Atmega clock (asynch mode)
+    //prescaler source clock set to internal Atmega clock (synch mode)
     ASSR &= ~(1<<AS2);
 	
     if (F_CPU == 1600000UL) {	// prescaler set to 64

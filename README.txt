@@ -13,7 +13,8 @@ Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
 ***********************
 Version history
 
-v. 1.0.1a: function taskIsRunning renamed to getTaskStatus
+v. 1.0.2:  code cleaning
+v. 1.0.1a: function taskIsRunning renamed as getTaskStatus
 v. 1.0.1:  code cleaning and 32-bit overflow fixing
 v. 1.0.0:  added a method to check if a task is running - first stable release
 v. 0.1.5:  added support for Atmega344
@@ -154,9 +155,9 @@ The library should compile and work versus the following:
 - Attiny2313/4313
 - Attiny24/44/84
 - Attiny25/45/85
-- Atmega344/644/1284
-- Atmega8
-- Atmega48/88/168/328
+- Atmega344/644/1284/P
+- Atmega8/A
+- Atmega48/88/168/328/P
 - Atmega640/1280/1281/2560/2561
 - Atmega32U4 (only at 16 MHz)
 
@@ -191,4 +192,4 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ***********************
 Document revision
 
-17th revision: 2012/10/28
+18th revision: 2012/11/28

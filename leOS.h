@@ -31,10 +31,10 @@
 
 
 //library version
-#define leOS_VERSION 101
+#define leOS_VERSION 102
 
 
-//Library is compatible both with Arduino <=0023 and Arduino >=100
+//this library is compatible both with Arduino <=0023 and Arduino >=100
 #if defined(ARDUINO) && (ARDUINO >= 100)
 #include "Arduino.h"
 #else
@@ -45,6 +45,7 @@
 //uncomment this line if you want to use 64-bit math (more Flash consumption) - default is 32-bit math
 //(read the README.txt file for more info about the use of 32- vs. 64-bit math)
 //#define SIXTYFOUR_MATH
+
 
 //check if the micro is supported
 #if defined (__AVR_ATmega48__) || defined (__AVR_ATmega88__) || defined (__AVR_ATmega168__) || defined (__AVR_ATmega328__) || defined (__AVR_ATmega48P__) || defined (__AVR_ATmega88P__) || defined (__AVR_ATmega168P__) || defined (__AVR_ATmega328P__)
