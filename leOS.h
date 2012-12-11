@@ -11,7 +11,7 @@
     The latest version of this library can be found at:
     http://www.leonardomiliani.com/?p=516
     	
-	Current version: 1.0.1a - 2012/10/28
+	Current version: 1.0.2 - 2012/11/28
     (for a complete history of the previous versions, see the README file)
     
 	This library is free software; you can redistribute it and/or
@@ -85,7 +85,6 @@ class leOS {
 		//public methods
 		leOS();
         void begin(void);
-        //void (*voidFuncPtr)(void);
 		uint8_t addTask(void (*)(void), unsigned long, uint8_t taskStatus=1);
 		uint8_t removeTask(void (*)(void));
 		uint8_t pauseTask(void (*)(void));
