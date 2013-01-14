@@ -13,6 +13,7 @@ Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
 ***********************
 Version history
 
+v. 1.0.3:  now a task can be started once it has been added to the scheduler
 v. 1.0.2:  code cleaning
 v. 1.0.1a: function taskIsRunning renamed as getTaskStatus
 v. 1.0.1:  code cleaning and 32-bit overflow fixing
@@ -92,9 +93,10 @@ myOS.getTaskStatus(yourFunction);
 
 This will return 255 if there was an error (task not found) or a value for the
 current status: 
-PAUSED (equal to 0) - task is paused/not running
-SCHEDULED (equal to 1) - task is running 
-ONETIME (equal to 2) - task is scheduled to run in a near future.
+PAUSED - task is paused/not running
+SCHEDULED - task is running 
+ONETIME - task is scheduled to run in a near future.
+SCHEDULED_IMMEDIATESTART - the task will be executed once it has been added to the scheduler
 
 
 *Be careful*: the user is asked to check his code to avoid strange situations when 
@@ -192,4 +194,4 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ***********************
 Document revision
 
-18th revision: 2012/11/28
+19th revision: 2012/12/23

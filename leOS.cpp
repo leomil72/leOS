@@ -67,15 +67,18 @@ uint8_t leOS::addTask(void (*userTask)(void), unsigned long taskInterval, uint8_
 	if ((taskInterval < 1) || (taskInterval > MAX_TASK_INTERVAL)) { 
 		taskInterval = 50; //50 ms by default
 	}
-    if (taskStatus > ONETIME) { //allowed values are 0=paused task -- 1=cyclic task -- 2=onetime task
+    //check if taskStatus is valid
+    if (taskStatus > SCHEDULED_IMMEDIATESTART) { 
         taskStatus = SCHEDULED;
     }
     //add the task to the scheduler
     SREG &= ~(1<<SREG_I); //halt the scheduler
 	tasks[_numTasks].taskPointer = *userTask;
-	tasks[_numTasks].taskIsActive = taskStatus;
+	tasks[_numTasks].taskIsActive = taskStatus & 0b00000011; //I get only the first 2 bits - I don't need the IMMEDIATESTART bit
 	tasks[_numTasks].userTasksInterval = taskInterval;
-	tasks[_numTasks].plannedTask = _counterMs + taskInterval;
+	//no wait if the user wants the task up and running once added...
+    //...otherwise we wait for the interval before to run the task
+	tasks[_numTasks].plannedTask = _counterMs + ((taskStatus & 0b00000100)? 0 : taskInterval);
 	_numTasks++;
     SREG |= (1<<SREG_I); //restart the scheduler
     return 0;

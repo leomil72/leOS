@@ -31,7 +31,7 @@
 
 
 //library version
-#define leOS_VERSION 102
+#define leOS_VERSION 103
 
 
 //this library is compatible both with Arduino <=0023 and Arduino >=100
@@ -77,7 +77,8 @@
 #endif
 
 const uint8_t PAUSED = 0;
-const uint8_t SCHEDULED = 1;
+const uint8_t SCHEDULED = 1; //0b00000001
+const uint8_t SCHEDULED_IMMEDIATESTART = 5; //0b00000101
 const uint8_t ONETIME = 2;
 
 class leOS {
