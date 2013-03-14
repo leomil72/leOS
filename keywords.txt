@@ -11,7 +11,7 @@ leOS    KEYWORD1
 #######################################
 
 addTask KEYWORD2
-modifyTask  KEYWORD2
+modifyTask	KEYWORD2
 pauseTask   KEYWORD2
 removeTask  KEYWORD2
 restartTask KEYWORD2
