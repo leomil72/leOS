@@ -9,9 +9,9 @@
 	Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
     
     The latest version of this library can be found at:
-    http://www.leonardomiliani.com/?p=516
+    http://www.leonardomiliani.com/
     	
-	Current version: 1.0.2 - 2012/11/28
+	Current version: 1.1.0 - 2013/03/15
     (for a complete history of the previous versions, see the README file)
     
 	This library is free software; you can redistribute it and/or
@@ -31,7 +31,7 @@
 
 
 //library version
-#define leOS_VERSION 103
+#define leOS_VERSION 110
 
 
 //this library is compatible both with Arduino <=0023 and Arduino >=100
@@ -92,6 +92,8 @@ class leOS {
         uint8_t restartTask(void (*)(void));
 		uint8_t modifyTask(void (*)(void), unsigned long, uint8_t oneTimeTask=NULL);
 		uint8_t getTaskStatus(void (*)(void));
+		void haltScheduler(void);
+		void restartScheduler(void);
 	private:
         //private methods
         void setTimer();
