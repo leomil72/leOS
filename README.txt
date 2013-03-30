@@ -13,6 +13,8 @@ Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
 ***********************
 Version history
 
+v. 1.1.1:  minor changes
+v. 1.1.0:  new methods to stop/restart the scheduler
 v. 1.0.3:  now a task can be started once it has been added to the scheduler
 v. 1.0.2:  code cleaning
 v. 1.0.1a: function taskIsRunning renamed as getTaskStatus
@@ -97,6 +99,18 @@ PAUSED - task is paused/not running
 SCHEDULED - task is running 
 ONETIME - task is scheduled to run in a near future.
 SCHEDULED_IMMEDIATESTART - the task will be executed once it has been added to the scheduler
+
+
+Introduced with leOS 1.1.0 there are 2 new methods that permit to stop/restart
+the scheduler, useful if you need to stop all the running tasks at the 
+same time:
+
+myOS.haltScheduler();
+stops the scheduler and freezes all the tasks preserving their current
+intervals;
+
+myOS.restartScheduler();
+restarts the scheduler resuming all the tasks that were running.
 
 
 *Be careful*: the user is asked to check his code to avoid strange situations when 
@@ -194,4 +208,4 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ***********************
 Document revision
 
-19th revision: 2012/12/23
+20th revision: 2013/03/30

@@ -78,19 +78,21 @@ void leOS::haltScheduler(void) {
 
 //restart the scheduler
 void leOS::restartScheduler(void) {
-	SREG &= ~(1<<SREG_I);
+	if (_initialized) {
+		SREG &= ~(1<<SREG_I);
 #if defined (ATMEGAx8) || defined (ATMEGAx4) || defined (ATMEGAx0)
-    TIMSK2 |= (1<<TOIE2);
+		TIMSK2 |= (1<<TOIE2);
 #elif defined (ATMEGA8)
-    TIMSK |= (1<<TOIE2);
+		TIMSK |= (1<<TOIE2);
 #elif defined (ATTINYx5) || defined (ATTINYx313)
-    TIMSK |= (1<<TOIE0);
+		TIMSK |= (1<<TOIE0);
 #elif defined (ATTINYx4)
-    TIMSK0 |= (1<<TOIE0);
+		TIMSK0 |= (1<<TOIE0);
 #elif defined (ATMEGAxU)
-	TIMSK3 |= (1<<TOIE3);
+		TIMSK3 |= (1<<TOIE3);
 #endif
-    SREG |= (1<<SREG_I);
+		SREG |= (1<<SREG_I);
+	}
 }
 
 
