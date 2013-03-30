@@ -98,8 +98,8 @@ current status:
 PAUSED - task is paused/not running
 SCHEDULED - task is running 
 ONETIME - task is scheduled to run in a near future.
-SCHEDULED_IMMEDIATESTART - the task will be executed once it has been added to the scheduler
-
+SCHEDULED_IMMEDIATESTART or simply IMMEDIATESTART, for a task that has to
+be executed once it has been added to the scheduler.
 
 Introduced with leOS 1.1.0 there are 2 new methods that permit to stop/restart
 the scheduler, useful if you need to stop all the running tasks at the 
