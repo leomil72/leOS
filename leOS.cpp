@@ -153,8 +153,8 @@ uint8_t leOS::modifyTask(void (*userTask)(void), unsigned long taskInterval, uin
             }
             tasks[tempI].plannedTask = _counterMs + taskInterval;
             _numTasks++;
-            break;
             _done = 0;
+            break;
         }
         tempI++;
     } while (tempI < _numTasks);

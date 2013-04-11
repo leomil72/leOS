@@ -1,19 +1,21 @@
 /*
-	leOS.h - <l>ittle <e>mbedded <O>perating <S>ystem 
+	leOS.h - <l>ittle <e>mbedded <O>perating <S>ystem
 	This is not a complete OS nor an RTOS as you usually know but
-	it's a simple scheduler to schedule little works in background, so that 
+	it's a simple scheduler to schedule little works in background, so that
 	you	can forget about them. It's designed for Arduino and other common
 	Atmel microcontroller (for the complete list of the supported MCUs
     please refer to the README.txt file).
 
 	Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
-    
+
     The latest version of this library can be found at:
     http://www.leonardomiliani.com/
-    	
-	Current version: 1.1.0 - 2013/03/15
-    (for a complete history of the previous versions, see the README file)
-    
+    or
+	https://github.com/leomil72
+
+	Current version: 1.1.2 - 2013/04/11
+	(for a complete history of the previous versions, see the README file)
+
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public
 	License as published by the Free Software Foundation; either
@@ -21,7 +23,7 @@
 
 	This library is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 */
 
@@ -31,7 +33,7 @@
 
 
 //library version
-#define leOS_VERSION 111
+#define leOS_VERSION 112
 
 
 //this library is compatible both with Arduino <=0023 and Arduino >=100
@@ -57,7 +59,7 @@
 #elif defined (__AVR_ATtiny24__) || defined (__AVR_ATtiny44__) || defined (__AVR_ATtiny84__)
 #define ATTINYx4
 #elif defined (__AVR_ATmega640__) || defined (__AVR_ATmega1280__) || defined (__AVR_ATmega1281__) || defined (__AVR_ATmega2560__) || defined (__AVR_ATmega2561__)
-#define ATMEGAx0 
+#define ATMEGAx0
 #elif defined (__AVR_ATmega344__) || defined (__AVR_ATmega344P__) || defined (__AVR_ATmega644__) || defined (__AVR_ATmega644P__) || defined (__AVR_ATmega644PA__) || defined (__AVR_ATmega1284P__)
 #define ATMEGAx4
 #elif defined (__AVR_ATtiny2313__) || defined (__AVR_ATtiny4313__)
@@ -65,7 +67,7 @@
 #elif defined (__AVR_ATmega32U4__)
 #define ATMEGAxU
 #if (F_CPU!=16000000UL)
-#error Sorry, Atmega32U4 is supported only at 16 MHz 
+#error Sorry, Atmega32U4 is supported only at 16 MHz
 #endif
 #else
 #error Sorry, microcontroller not supported!
@@ -83,7 +85,7 @@ const uint8_t IMMEDIATESTART = SCHEDULED_IMMEDIATESTART; //alias for previous
 const uint8_t ONETIME = 2;
 
 class leOS {
-	public: 
+	public:
 		//public methods
 		leOS();
         void begin(void);

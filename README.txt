@@ -13,6 +13,7 @@ Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
 ***********************
 Version history
 
+v. 1.1.2:  fixed an issue in modifyTask
 v. 1.1.1:  minor changes
 v. 1.1.0:  new methods to stop/restart the scheduler
 v. 1.0.3:  now a task can be started once it has been added to the scheduler
@@ -208,4 +209,4 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ***********************
 Document revision
 
-20th revision: 2013/03/30
+21th revision: 2013/04/11
