@@ -284,9 +284,9 @@ ISR (TIMER3_OVF_vect) {
 #else
             if ((long)(_counterMs - tasks[tempI].plannedTask) >=0) { //this trick overrun the overflow of _counterMs
 #endif
-				tasks[tempI].taskPointer(); //call the task
                 //if it's a one-time task, than it has to be removed after running
                 if (tasks[tempI].taskIsActive == ONETIME) { 
+					tasks[tempI].taskPointer(); //call the task
                     if ((tempI + 1) == _numTasks) { 
                         _numTasks--;
                     } else if (_numTasks > 1) {
@@ -303,6 +303,7 @@ ISR (TIMER3_OVF_vect) {
                 } else {
                     //let's schedule next start
                     tasks[tempI].plannedTask = _counterMs + tasks[tempI].userTasksInterval;
+					tasks[tempI].taskPointer(); //call the task
                 }
 			}
 		}
