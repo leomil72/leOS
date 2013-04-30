@@ -152,7 +152,6 @@ uint8_t leOS::modifyTask(void (*userTask)(void), unsigned long taskInterval, uin
                 tasks[tempI].taskIsActive = oneTimeTask;
             }
             tasks[tempI].plannedTask = _counterMs + taskInterval;
-            _numTasks++;
             _done = 0;
             break;
         }
