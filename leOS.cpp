@@ -152,7 +152,6 @@ uint8_t leOS::modifyTask(void (*userTask)(void), unsigned long taskInterval, uin
                 tasks[tempI].taskIsActive = oneTimeTask;
             }
             tasks[tempI].plannedTask = _counterMs + taskInterval;
-            _numTasks++;
             _done = 0;
             break;
         }
@@ -178,9 +177,9 @@ uint8_t leOS::setTask(void (*userTask)(void), uint8_t tempStatus, unsigned long 
             tasks[tempI].taskIsActive = tempStatus;
             if (tempStatus == SCHEDULED) { 
 				if (taskInterval == NULL) {
-					tasks[_numTasks].plannedTask = _counterMs + tasks[tempI].userTasksInterval;
+					tasks[tempI].plannedTask = _counterMs + tasks[tempI].userTasksInterval;
 				} else {
-					tasks[_numTasks].plannedTask = _counterMs + taskInterval;
+					tasks[tempI].plannedTask = _counterMs + taskInterval;
 				}
 			}
             break;
@@ -284,9 +283,9 @@ ISR (TIMER3_OVF_vect) {
 #else
             if ((long)(_counterMs - tasks[tempI].plannedTask) >=0) { //this trick overrun the overflow of _counterMs
 #endif
-				tasks[tempI].taskPointer(); //call the task
                 //if it's a one-time task, than it has to be removed after running
                 if (tasks[tempI].taskIsActive == ONETIME) { 
+					tasks[tempI].taskPointer(); //call the task
                     if ((tempI + 1) == _numTasks) { 
                         _numTasks--;
                     } else if (_numTasks > 1) {
@@ -303,6 +302,7 @@ ISR (TIMER3_OVF_vect) {
                 } else {
                     //let's schedule next start
                     tasks[tempI].plannedTask = _counterMs + tasks[tempI].userTasksInterval;
+					tasks[tempI].taskPointer(); //call the task
                 }
 			}
 		}
