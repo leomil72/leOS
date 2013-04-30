@@ -177,9 +177,9 @@ uint8_t leOS::setTask(void (*userTask)(void), uint8_t tempStatus, unsigned long 
             tasks[tempI].taskIsActive = tempStatus;
             if (tempStatus == SCHEDULED) { 
 				if (taskInterval == NULL) {
-					tasks[_numTasks].plannedTask = _counterMs + tasks[tempI].userTasksInterval;
+					tasks[tempI].plannedTask = _counterMs + tasks[tempI].userTasksInterval;
 				} else {
-					tasks[_numTasks].plannedTask = _counterMs + taskInterval;
+					tasks[tempI].plannedTask = _counterMs + taskInterval;
 				}
 			}
             break;
