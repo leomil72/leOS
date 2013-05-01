@@ -13,6 +13,7 @@ Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
 ***********************
 Version history
 
+v. 1.1.3:  little bugs fixed
 v. 1.1.2:  fixed an issue in modifyTask
 v. 1.1.1:  minor changes
 v. 1.1.0:  new methods to stop/restart the scheduler
@@ -82,7 +83,7 @@ myOS.restartTask(yourFunction);
 To remove a task from the scheduler call this method:
 myOS.removeTask(yourFunction);
 
-To modify a running task, simply call the modifyTask method with the new interval time 
+To modify a running task, simply call the modifyTask method with the new interval time
 and/or the kind of the status' task, i.e. a normal or a one-time task:
 myOS.modifyTask(yourFunction, newInterval [, newTaskStatus]);
 
@@ -95,15 +96,15 @@ To check if a task is running, you have to use the taskIsRunning() method:
 myOS.getTaskStatus(yourFunction);
 
 This will return 255 if there was an error (task not found) or a value for the
-current status: 
+current status:
 PAUSED - task is paused/not running
-SCHEDULED - task is running 
+SCHEDULED - task is running
 ONETIME - task is scheduled to run in a near future.
 SCHEDULED_IMMEDIATESTART or simply IMMEDIATESTART, for a task that has to
 be executed once it has been added to the scheduler.
 
 Introduced with leOS 1.1.0 there are 2 new methods that permit to stop/restart
-the scheduler, useful if you need to stop all the running tasks at the 
+the scheduler, useful if you need to stop all the running tasks at the
 same time:
 
 myOS.haltScheduler();
@@ -114,9 +115,9 @@ myOS.restartScheduler();
 restarts the scheduler resuming all the tasks that were running.
 
 
-*Be careful*: the user is asked to check his code to avoid strange situations when 
-he pauses a task. I.e.: if the task that has been paused alternated the output of 
-a pin and that pin drove an external circuit, the user should check if the status 
+*Be careful*: the user is asked to check his code to avoid strange situations when
+he pauses a task. I.e.: if the task that has been paused alternated the output of
+a pin and that pin drove an external circuit, the user should check if the status
 of the pin after the task has been paused is safe and compatible with his needs.
 
 
@@ -128,7 +129,7 @@ Using 32-bit math, the maximum interval that can be choosed is limited to 49.7 d
 the overflow of the counter has been fixed since versione 1.0.1.
 
 While using 64-bit math the maximum that can be choosen is only limited by the
-user's fantasy, due to the fact that the 64-bit counter will overflow after 
+user's fantasy, due to the fact that the 64-bit counter will overflow after
 584,942,417 years (default maximum interval is 1 hour, but you can change this
 value editing the leOS::addTask method inside the leOS.cpp file).
 
@@ -166,7 +167,7 @@ main loop.
 ***********************
 Supported microcontrollers
 
-Actually the library has been successfully tested with Arduino UNO, Atmega328, 
+Actually the library has been successfully tested with Arduino UNO, Atmega328,
 Arduino MEGA2560 and Arduino Leonardo.
 The library should compile and work versus the following:
 - Attiny2313/4313
@@ -181,7 +182,7 @@ The library should compile and work versus the following:
 Supported clocks are 1, 4, 8, and 16 MHz.
 
 NOTE:
-To use leOS on Attiny 24/44/84 microcontrollers you have to modify a file of the Tiny 
+To use leOS on Attiny 24/44/84 microcontrollers you have to modify a file of the Tiny
 core to move the millis() and delay() functions from timer 0 to timer 1.
 To do that, open the file /arduino-your_version/hardware/tiny/cores/tiny/core_build_options.c
 and look for the section "Build options for the ATtiny84 processor".
@@ -196,17 +197,17 @@ then save the file and reload the Arduino IDE.
 ***********************
 Licence
 
-This library is free software; you can redistribute it and/or modify it under 
-the terms of the GNU General Public	License as published by the Free Software 
-Foundation; either version 3.0 of the License, or (at your option) any later 
+This library is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public	License as published by the Free Software
+Foundation; either version 3.0 of the License, or (at your option) any later
 version.
 
 This library is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 
 ***********************
 Document revision
 
-21th revision: 2013/04/11
+22th revision: 2013/05/01
