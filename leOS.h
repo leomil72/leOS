@@ -13,7 +13,7 @@
     or
 	https://github.com/leomil72
 
-	Current version: 1.1.2 - 2013/04/11
+	Current version: 1.1.3 - 2013/05/01
 	(for a complete history of the previous versions, see the README file)
 
 	This library is free software; you can redistribute it and/or
