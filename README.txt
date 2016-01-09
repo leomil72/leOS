@@ -13,6 +13,7 @@ Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
 ***********************
 Version history
 
+v. 1.1.4:  scheduler's code revisited and fixed some bugs
 v. 1.1.3:  little bugs fixed
 v. 1.1.2:  fixed an issue in modifyTask
 v. 1.1.1:  minor changes

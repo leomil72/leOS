@@ -274,7 +274,8 @@ ISR (TIMER3_OVF_vect) {
     _counterMs++; //increment the ms counter
 
     //this is the scheduler - it checks if a task has to be executed
-	uint8_t tempI = 0;	
+	uint8_t tempI = 0;
+	void (*savedJobPointer)(void);
 	do {
 		if (tasks[tempI].taskIsActive > 0 ) { //the task is running  
             //check if it's time to execute the task
@@ -285,8 +286,19 @@ ISR (TIMER3_OVF_vect) {
 #endif
                 //if it's a one-time task, than it has to be removed after running
                 if (tasks[tempI].taskIsActive == ONETIME) { 
-					tasks[tempI].taskPointer(); //call the task
-                    if ((tempI + 1) == _numTasks) { 
+                	savedJobPointer = tasks[tempI].taskPointer; //store its pointer
+					savedJobPointer(); //call the task
+					//re-determine the task's position in the case it's changed
+					tempI = 0;
+					do {
+						if (tasks[tempI].taskPointer == savedJobPointer) { //found the task
+							break;
+						} else {
+							tempI++;
+						}
+					} while (tempI <= _numTasks);
+					//remove it from the scheduler
+                    if (tempI == _numTasks) { 
                         _numTasks--;
                     } else if (_numTasks > 1) {
                         for (uint8_t tempJ = tempI; tempJ < _numTasks; tempJ++) {
