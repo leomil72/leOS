@@ -276,7 +276,7 @@ ISR (TIMER3_OVF_vect) {
     //this is the scheduler - it checks if a task has to be executed
 	uint8_t tempI = 0;
 	void (*savedJobPointer)(void);
-	do {
+	while (tempI < _numTasks) {
 		if (tasks[tempI].taskIsActive > 0 ) { //the task is running  
             //check if it's time to execute the task
 #ifdef SIXTYFOUR_MATH
@@ -318,8 +318,8 @@ ISR (TIMER3_OVF_vect) {
                 }
 			}
 		}
-	tempI++;
-	} while (tempI < _numTasks);
+	    tempI++;
+	}
 }
 
 

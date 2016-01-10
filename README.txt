@@ -13,6 +13,7 @@ Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
 ***********************
 Version history
 
+v. 1.2.0:  fixed a critical bug that lead to infinite execution of task 0 (also if ONETIME)
 v. 1.1.4:  scheduler's code revisited and fixed some bugs
 v. 1.1.3:  little bugs fixed
 v. 1.1.2:  fixed an issue in modifyTask
@@ -211,4 +212,4 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ***********************
 Document revision
 
-23th revision: 2016/01/09
+24th revision: 2016/01/10
