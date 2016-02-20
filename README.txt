@@ -13,6 +13,7 @@ Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
 ***********************
 Version history
 
+v. 1.2.1:  fixed compatibility with Arduino IDE >= 1.6.7
 v. 1.2.0:  fixed a critical bug that lead to infinite execution of task 0 (also if ONETIME)
 v. 1.1.4:  scheduler's code revisited and fixed some bugs
 v. 1.1.3:  little bugs fixed
@@ -212,4 +213,4 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ***********************
 Document revision
 
-24th revision: 2016/01/10
+25th revision: 2016/02/20
