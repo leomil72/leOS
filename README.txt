@@ -13,6 +13,7 @@ Written by Leonardo Miliani <leonardo AT leonardomiliani DOT com>
 ***********************
 Version history
 
+v. 1.2.2:  use correct field separator in keywords.txt (per1234)
 v. 1.2.1:  fixed compatibility with Arduino IDE >= 1.6.7
 v. 1.2.0:  fixed a critical bug that lead to infinite execution of task 0 (also if ONETIME)
 v. 1.1.4:  scheduler's code revisited and fixed some bugs
